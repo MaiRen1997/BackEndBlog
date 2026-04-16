@@ -23,5 +23,9 @@ module.exports = [
   {
     text: 'Mysql',
     link: '/Mysql/',
+  },
+  {
+    text: '项目总结',
+    link: '/ProjectAnalyse/',
   }
 ];
