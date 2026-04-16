@@ -25,7 +25,7 @@ module.exports = [
     link: '/Mysql/',
   },
   {
-    text: '项目总结',
-    link: '/ProjectAnalyse/',
+    text: 'FastApi',
+    link: '/FastApi/',
   }
 ];
