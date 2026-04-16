@@ -1,10 +1,10 @@
 const nav = require('./nav.js')
 module.exports = {
-  base: '/Myblog/',// 提交时使用该配置
+  base: '/BackEndBlog/',// 提交时使用该配置
   // base: './', 
   // base: '/', // 本地运行时，取消这行注释
   title: "麦仁博客",
-  description: "记录前端知识、读书学习",
+  description: "记录后端知识、读书学习",
   dest: 'docs/.vuepress/dist/',
   plugins: [
     [
