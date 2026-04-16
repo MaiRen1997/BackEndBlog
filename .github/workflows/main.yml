@@ -10,6 +10,8 @@ on:
 # 任务
 jobs:
   build-and-deploy:
+    permissions:
+      contents: write
     # 服务器环境：最新版 Ubuntu
     runs-on: ubuntu-latest
     strategy:
