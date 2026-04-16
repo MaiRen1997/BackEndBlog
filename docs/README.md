@@ -17,5 +17,5 @@ features: # 可选的
     imgUrl: /img/golang.png # 可选
     link: /golang/
     # imgUrl: /img/other.png
-footer: 麦仁 | 前端开发
+footer: 麦仁 | 全栈开发
 ---
