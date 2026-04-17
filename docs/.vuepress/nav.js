@@ -27,5 +27,9 @@ module.exports = [
   {
     text: 'FastApi',
     link: '/FastApi/',
+  },
+  {
+    text: 'PySyllabus',
+    link: '/PySyllabus/',
   }
 ];
