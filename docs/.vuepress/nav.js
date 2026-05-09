@@ -25,8 +25,8 @@ module.exports = [
     link: '/Mysql/',
   },
   {
-    text: 'FastApi',
-    link: '/FastApi/',
+    text: 'FastAPI',
+    link: '/FastAPI/',
   },
   {
     text: 'PySyllabus',
