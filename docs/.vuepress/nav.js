@@ -29,6 +29,10 @@ module.exports = [
     link: '/FastApi/',
   },
   {
+    text: '运维相关',
+    link: '/maintenance/',
+  },
+  {
     text: 'PySyllabus',
     link: '/PySyllabus/',
   }
