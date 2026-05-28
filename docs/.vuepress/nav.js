@@ -30,7 +30,7 @@ module.exports = [
   },
   {
     text: '运维相关',
-    link: '/maintenance/',
+    link: '/MaintenanceDoc/',
   },
   {
     text: 'PySyllabus',
