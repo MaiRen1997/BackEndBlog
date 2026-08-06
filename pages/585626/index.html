@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>文件+minio实现上传 | 麦仁后端博客</title>
+    <meta name="generator" content="VuePress 1.9.9">
+    
+    <meta name="description" content="记录后端知识、读书学习">
+    
+    <link rel="preload" href="/BackEndBlog/assets/css/0.styles.77db9a27.css" as="style"><link rel="preload" href="/BackEndBlog/assets/js/app.14233fa7.js" as="script"><link rel="preload" href="/BackEndBlog/assets/js/2.e9d3904f.js" as="script"><link rel="preload" href="/BackEndBlog/assets/js/194.96631f58.js" as="script"><link rel="prefetch" href="/BackEndBlog/assets/js/10.92818e4d.js"><link rel="prefetch" href="/BackEndBlog/assets/js/100.84ccff0e.js"><link rel="prefetch" href="/BackEndBlog/assets/js/101.24059874.js"><link rel="prefetch" href="/BackEndBlog/assets/js/102.f6b18f58.js"><link rel="prefetch" href="/BackEndBlog/assets/js/103.c0cc02f7.js"><link rel="prefetch" href="/BackEndBlog/assets/js/104.ae4be942.js"><link rel="prefetch" href="/BackEndBlog/assets/js/105.497aa14b.js"><link rel="prefetch" href="/BackEndBlog/assets/js/106.32ee05b2.js"><link rel="prefetch" href="/BackEndBlog/assets/js/107.241b6994.js"><link rel="prefetch" href="/BackEndBlog/assets/js/108.f2d03e0c.js"><link rel="prefetch" href="/BackEndBlog/assets/js/109.68d633c7.js"><link rel="prefetch" href="/BackEndBlog/assets/js/11.7cbcc7c6.js"><link rel="prefetch" href="/BackEndBlog/assets/js/110.039857fa.js"><link rel="prefetch" href="/BackEndBlog/assets/js/111.a6c2dde4.js"><link rel="prefetch" href="/BackEndBlog/assets/js/112.7a8e6a47.js"><link rel="prefetch" href="/BackEndBlog/assets/js/113.5b313b9c.js"><link rel="prefetch" href="/BackEndBlog/assets/js/114.55ec9f3c.js"><link rel="prefetch" href="/BackEndBlog/assets/js/115.65640294.js"><link rel="prefetch" href="/BackEndBlog/assets/js/116.7189aed7.js"><link rel="prefetch" href="/BackEndBlog/assets/js/117.f6c86593.js"><link rel="prefetch" href="/BackEndBlog/assets/js/118.f9eb8bbc.js"><link rel="prefetch" href="/BackEndBlog/assets/js/119.7873aa43.js"><link rel="prefetch" href="/BackEndBlog/assets/js/12.4e8cde47.js"><link rel="prefetch" href="/BackEndBlog/assets/js/120.7610b832.js"><link rel="prefetch" href="/BackEndBlog/assets/js/121.511ac1a2.js"><link rel="prefetch" href="/BackEndBlog/assets/js/122.6e81866c.js"><link rel="prefetch" href="/BackEndBlog/assets/js/123.b3017f7f.js"><link rel="prefetch" href="/BackEndBlog/assets/js/124.a83d1ac5.js"><link rel="prefetch" href="/BackEndBlog/assets/js/125.772a1ffe.js"><link rel="prefetch" href="/BackEndBlog/assets/js/126.62153744.js"><link rel="prefetch" href="/BackEndBlog/assets/js/127.a2dec9a6.js"><link rel="prefetch" href="/BackEndBlog/assets/js/128.2b7f2fc3.js"><link rel="prefetch" href="/BackEndBlog/assets/js/129.3f625968.js"><link rel="prefetch" href="/BackEndBlog/assets/js/13.ea1b7baa.js"><link rel="prefetch" href="/BackEndBlog/assets/js/130.389771f4.js"><link rel="prefetch" href="/BackEndBlog/assets/js/131.a4b99009.js"><link rel="prefetch" href="/BackEndBlog/assets/js/132.e0e5b3f0.js"><link rel="prefetch" href="/BackEndBlog/assets/js/133.5655377a.js"><link rel="prefetch" href="/BackEndBlog/assets/js/134.31d53317.js"><link rel="prefetch" href="/BackEndBlog/assets/js/135.bb62b6ae.js"><link rel="prefetch" href="/BackEndBlog/assets/js/136.7aa0264d.js"><link rel="prefetch" href="/BackEndBlog/assets/js/137.c26ad69e.js"><link rel="prefetch" href="/BackEndBlog/assets/js/138.cc55b832.js"><link rel="prefetch" href="/BackEndBlog/assets/js/139.ae7ad1de.js"><link rel="prefetch" href="/BackEndBlog/assets/js/14.3519d3d1.js"><link rel="prefetch" href="/BackEndBlog/assets/js/140.eebfc58f.js"><link rel="prefetch" href="/BackEndBlog/assets/js/141.b32a2e64.js"><link rel="prefetch" href="/BackEndBlog/assets/js/142.8a1e8437.js"><link rel="prefetch" href="/BackEndBlog/assets/js/143.c4b288a6.js"><link rel="prefetch" href="/BackEndBlog/assets/js/144.f906eb24.js"><link rel="prefetch" href="/BackEndBlog/assets/js/145.3ee00a3a.js"><link rel="prefetch" href="/BackEndBlog/assets/js/146.a8bcad57.js"><link rel="prefetch" href="/BackEndBlog/assets/js/147.e005736e.js"><link rel="prefetch" href="/BackEndBlog/assets/js/148.d6dc7728.js"><link rel="prefetch" href="/BackEndBlog/assets/js/149.3224427b.js"><link rel="prefetch" href="/BackEndBlog/assets/js/15.545afd6b.js"><link rel="prefetch" href="/BackEndBlog/assets/js/150.9bcdf682.js"><link rel="prefetch" href="/BackEndBlog/assets/js/151.49685297.js"><link rel="prefetch" href="/BackEndBlog/assets/js/152.44c56070.js"><link rel="prefetch" href="/BackEndBlog/assets/js/153.9d15357c.js"><link rel="prefetch" href="/BackEndBlog/assets/js/154.e09ec676.js"><link rel="prefetch" href="/BackEndBlog/assets/js/155.5224c865.js"><link rel="prefetch" href="/BackEndBlog/assets/js/156.5b1953b4.js"><link rel="prefetch" href="/BackEndBlog/assets/js/157.21dec70d.js"><link rel="prefetch" href="/BackEndBlog/assets/js/158.ccf6aaae.js"><link rel="prefetch" href="/BackEndBlog/assets/js/159.e20699fd.js"><link rel="prefetch" href="/BackEndBlog/assets/js/16.771a66ee.js"><link rel="prefetch" href="/BackEndBlog/assets/js/160.ba87d115.js"><link rel="prefetch" href="/BackEndBlog/assets/js/161.4f3eaf1a.js"><link rel="prefetch" href="/BackEndBlog/assets/js/162.c87fe42a.js"><link rel="prefetch" href="/BackEndBlog/assets/js/163.b40a2310.js"><link rel="prefetch" href="/BackEndBlog/assets/js/164.131fdc03.js"><link rel="prefetch" href="/BackEndBlog/assets/js/165.e74d888c.js"><link rel="prefetch" href="/BackEndBlog/assets/js/166.f7329993.js"><link rel="prefetch" href="/BackEndBlog/assets/js/167.078636ab.js"><link rel="prefetch" href="/BackEndBlog/assets/js/168.ea9ca72c.js"><link rel="prefetch" href="/BackEndBlog/assets/js/169.a3bbcff2.js"><link rel="prefetch" href="/BackEndBlog/assets/js/17.df6291f0.js"><link rel="prefetch" href="/BackEndBlog/assets/js/170.cf9ca1bb.js"><link rel="prefetch" href="/BackEndBlog/assets/js/171.54ce396d.js"><link rel="prefetch" href="/BackEndBlog/assets/js/172.219b6366.js"><link rel="prefetch" href="/BackEndBlog/assets/js/173.514569be.js"><link rel="prefetch" href="/BackEndBlog/assets/js/174.cd8ca6cf.js"><link rel="prefetch" href="/BackEndBlog/assets/js/175.74e9a13d.js"><link rel="prefetch" href="/BackEndBlog/assets/js/176.605d2ccf.js"><link rel="prefetch" href="/BackEndBlog/assets/js/177.459272b6.js"><link rel="prefetch" href="/BackEndBlog/assets/js/178.a8edc9e7.js"><link rel="prefetch" href="/BackEndBlog/assets/js/179.97c7cad1.js"><link rel="prefetch" href="/BackEndBlog/assets/js/18.5a67c390.js"><link rel="prefetch" href="/BackEndBlog/assets/js/180.2e6c0e4f.js"><link rel="prefetch" href="/BackEndBlog/assets/js/181.08591e9b.js"><link rel="prefetch" href="/BackEndBlog/assets/js/182.ae080ae9.js"><link rel="prefetch" href="/BackEndBlog/assets/js/183.485e573b.js"><link rel="prefetch" href="/BackEndBlog/assets/js/184.3b51d8bd.js"><link rel="prefetch" href="/BackEndBlog/assets/js/185.8391a189.js"><link rel="prefetch" href="/BackEndBlog/assets/js/186.729fc06f.js"><link rel="prefetch" href="/BackEndBlog/assets/js/187.b8c066bb.js"><link rel="prefetch" href="/BackEndBlog/assets/js/188.4591530b.js"><link rel="prefetch" href="/BackEndBlog/assets/js/189.6de3b066.js"><link rel="prefetch" href="/BackEndBlog/assets/js/19.e20b924c.js"><link rel="prefetch" href="/BackEndBlog/assets/js/190.4f9c201f.js"><link rel="prefetch" href="/BackEndBlog/assets/js/191.f008a55b.js"><link rel="prefetch" href="/BackEndBlog/assets/js/192.27abc43f.js"><link rel="prefetch" href="/BackEndBlog/assets/js/193.c9eee4a5.js"><link rel="prefetch" href="/BackEndBlog/assets/js/195.6aee828a.js"><link rel="prefetch" href="/BackEndBlog/assets/js/196.421e7631.js"><link rel="prefetch" href="/BackEndBlog/assets/js/197.ef5e312d.js"><link rel="prefetch" href="/BackEndBlog/assets/js/198.ac390eab.js"><link rel="prefetch" href="/BackEndBlog/assets/js/199.d8e1b9ee.js"><link rel="prefetch" href="/BackEndBlog/assets/js/20.b1e28afd.js"><link rel="prefetch" href="/BackEndBlog/assets/js/200.4bc4a5b6.js"><link rel="prefetch" href="/BackEndBlog/assets/js/201.84588d5e.js"><link rel="prefetch" href="/BackEndBlog/assets/js/202.e67e0972.js"><link rel="prefetch" href="/BackEndBlog/assets/js/203.8e8285c0.js"><link rel="prefetch" href="/BackEndBlog/assets/js/204.4670d389.js"><link rel="prefetch" href="/BackEndBlog/assets/js/205.c16244db.js"><link rel="prefetch" href="/BackEndBlog/assets/js/206.ff254071.js"><link rel="prefetch" href="/BackEndBlog/assets/js/207.5de0c490.js"><link rel="prefetch" href="/BackEndBlog/assets/js/208.cc2c47f5.js"><link rel="prefetch" href="/BackEndBlog/assets/js/209.8a961ace.js"><link rel="prefetch" href="/BackEndBlog/assets/js/21.2869e4d3.js"><link rel="prefetch" href="/BackEndBlog/assets/js/210.0c8c0003.js"><link rel="prefetch" href="/BackEndBlog/assets/js/211.8ed90b8b.js"><link rel="prefetch" href="/BackEndBlog/assets/js/212.51f4c3d5.js"><link rel="prefetch" href="/BackEndBlog/assets/js/213.d66dc680.js"><link rel="prefetch" href="/BackEndBlog/assets/js/214.da601450.js"><link rel="prefetch" href="/BackEndBlog/assets/js/215.6f91186f.js"><link rel="prefetch" href="/BackEndBlog/assets/js/216.647fbcae.js"><link rel="prefetch" href="/BackEndBlog/assets/js/217.952567da.js"><link rel="prefetch" href="/BackEndBlog/assets/js/218.d50f09e5.js"><link rel="prefetch" href="/BackEndBlog/assets/js/219.be32b4fe.js"><link rel="prefetch" href="/BackEndBlog/assets/js/22.02cd9357.js"><link rel="prefetch" href="/BackEndBlog/assets/js/220.d20eff41.js"><link rel="prefetch" href="/BackEndBlog/assets/js/221.d563b61a.js"><link rel="prefetch" href="/BackEndBlog/assets/js/222.9e4f7e22.js"><link rel="prefetch" href="/BackEndBlog/assets/js/223.b71f248b.js"><link rel="prefetch" href="/BackEndBlog/assets/js/224.c019f1ac.js"><link rel="prefetch" href="/BackEndBlog/assets/js/23.1fa7bf3c.js"><link rel="prefetch" href="/BackEndBlog/assets/js/24.2f676e99.js"><link rel="prefetch" href="/BackEndBlog/assets/js/25.14bc1409.js"><link rel="prefetch" href="/BackEndBlog/assets/js/26.0e340da0.js"><link rel="prefetch" href="/BackEndBlog/assets/js/27.eea788f9.js"><link rel="prefetch" href="/BackEndBlog/assets/js/28.5b6f1017.js"><link rel="prefetch" href="/BackEndBlog/assets/js/29.4aaa8b67.js"><link rel="prefetch" href="/BackEndBlog/assets/js/3.c3ce97ed.js"><link rel="prefetch" href="/BackEndBlog/assets/js/30.afca768c.js"><link rel="prefetch" href="/BackEndBlog/assets/js/31.c4f1a366.js"><link rel="prefetch" href="/BackEndBlog/assets/js/32.9ac81e85.js"><link rel="prefetch" href="/BackEndBlog/assets/js/33.91079c9f.js"><link rel="prefetch" href="/BackEndBlog/assets/js/34.e25c457d.js"><link rel="prefetch" href="/BackEndBlog/assets/js/35.ca9e2c1d.js"><link rel="prefetch" href="/BackEndBlog/assets/js/36.0c13f725.js"><link rel="prefetch" href="/BackEndBlog/assets/js/37.4dd33016.js"><link rel="prefetch" href="/BackEndBlog/assets/js/38.8d286bb5.js"><link rel="prefetch" href="/BackEndBlog/assets/js/39.2e4f24fe.js"><link rel="prefetch" href="/BackEndBlog/assets/js/4.80609fb2.js"><link rel="prefetch" href="/BackEndBlog/assets/js/40.e7abfd2c.js"><link rel="prefetch" href="/BackEndBlog/assets/js/41.4d106d17.js"><link rel="prefetch" href="/BackEndBlog/assets/js/42.68277ef5.js"><link rel="prefetch" href="/BackEndBlog/assets/js/43.7fe0688f.js"><link rel="prefetch" href="/BackEndBlog/assets/js/44.9669d797.js"><link rel="prefetch" href="/BackEndBlog/assets/js/45.3c1b34dc.js"><link rel="prefetch" href="/BackEndBlog/assets/js/46.c92e75b8.js"><link rel="prefetch" href="/BackEndBlog/assets/js/47.a0184a7c.js"><link rel="prefetch" href="/BackEndBlog/assets/js/48.cd6254b5.js"><link rel="prefetch" href="/BackEndBlog/assets/js/49.903eab18.js"><link rel="prefetch" href="/BackEndBlog/assets/js/5.9d630d92.js"><link rel="prefetch" href="/BackEndBlog/assets/js/50.7de10f59.js"><link rel="prefetch" href="/BackEndBlog/assets/js/51.703d9e10.js"><link rel="prefetch" href="/BackEndBlog/assets/js/52.836acb63.js"><link rel="prefetch" href="/BackEndBlog/assets/js/53.6fa14d68.js"><link rel="prefetch" href="/BackEndBlog/assets/js/54.744e8510.js"><link rel="prefetch" href="/BackEndBlog/assets/js/55.c720aa62.js"><link rel="prefetch" href="/BackEndBlog/assets/js/56.406e8419.js"><link rel="prefetch" href="/BackEndBlog/assets/js/57.4b1b93c4.js"><link rel="prefetch" href="/BackEndBlog/assets/js/58.8d53fe1c.js"><link rel="prefetch" href="/BackEndBlog/assets/js/59.1faaaa48.js"><link rel="prefetch" href="/BackEndBlog/assets/js/6.9216b6a4.js"><link rel="prefetch" href="/BackEndBlog/assets/js/60.c8a1abfc.js"><link rel="prefetch" href="/BackEndBlog/assets/js/61.c535fa2a.js"><link rel="prefetch" href="/BackEndBlog/assets/js/62.18a8efce.js"><link rel="prefetch" href="/BackEndBlog/assets/js/63.0f1ae202.js"><link rel="prefetch" href="/BackEndBlog/assets/js/64.941bc0d0.js"><link rel="prefetch" href="/BackEndBlog/assets/js/65.db3a4291.js"><link rel="prefetch" href="/BackEndBlog/assets/js/66.2f05b4b8.js"><link rel="prefetch" href="/BackEndBlog/assets/js/67.5f326698.js"><link rel="prefetch" href="/BackEndBlog/assets/js/68.c65c046c.js"><link rel="prefetch" href="/BackEndBlog/assets/js/69.f01d71fb.js"><link rel="prefetch" href="/BackEndBlog/assets/js/7.1c242a43.js"><link rel="prefetch" href="/BackEndBlog/assets/js/70.c7e4df25.js"><link rel="prefetch" href="/BackEndBlog/assets/js/71.f03bf3eb.js"><link rel="prefetch" href="/BackEndBlog/assets/js/72.9ca7239c.js"><link rel="prefetch" href="/BackEndBlog/assets/js/73.f9d99f47.js"><link rel="prefetch" href="/BackEndBlog/assets/js/74.1820721c.js"><link rel="prefetch" href="/BackEndBlog/assets/js/75.a1447e23.js"><link rel="prefetch" href="/BackEndBlog/assets/js/76.af550cd2.js"><link rel="prefetch" href="/BackEndBlog/assets/js/77.40b908ef.js"><link rel="prefetch" href="/BackEndBlog/assets/js/78.042e8809.js"><link rel="prefetch" href="/BackEndBlog/assets/js/79.1a6a53fc.js"><link rel="prefetch" href="/BackEndBlog/assets/js/8.82932373.js"><link rel="prefetch" href="/BackEndBlog/assets/js/80.c8a56f1f.js"><link rel="prefetch" href="/BackEndBlog/assets/js/81.3079e8c8.js"><link rel="prefetch" href="/BackEndBlog/assets/js/82.994c2691.js"><link rel="prefetch" href="/BackEndBlog/assets/js/83.ae630efa.js"><link rel="prefetch" href="/BackEndBlog/assets/js/84.dad5c028.js"><link rel="prefetch" href="/BackEndBlog/assets/js/85.3bea8d83.js"><link rel="prefetch" href="/BackEndBlog/assets/js/86.ec7dc01b.js"><link rel="prefetch" href="/BackEndBlog/assets/js/87.d8d95e52.js"><link rel="prefetch" href="/BackEndBlog/assets/js/88.38d570fa.js"><link rel="prefetch" href="/BackEndBlog/assets/js/89.c1469069.js"><link rel="prefetch" href="/BackEndBlog/assets/js/9.43846349.js"><link rel="prefetch" href="/BackEndBlog/assets/js/90.b34c7617.js"><link rel="prefetch" href="/BackEndBlog/assets/js/91.7379f430.js"><link rel="prefetch" href="/BackEndBlog/assets/js/92.f81c2a9e.js"><link rel="prefetch" href="/BackEndBlog/assets/js/93.91fad2e3.js"><link rel="prefetch" href="/BackEndBlog/assets/js/94.7b9f480e.js"><link rel="prefetch" href="/BackEndBlog/assets/js/95.fcab15e1.js"><link rel="prefetch" href="/BackEndBlog/assets/js/96.0867ae49.js"><link rel="prefetch" href="/BackEndBlog/assets/js/97.20b406f0.js"><link rel="prefetch" href="/BackEndBlog/assets/js/98.cf929670.js"><link rel="prefetch" href="/BackEndBlog/assets/js/99.11267c8a.js">
+    <link rel="stylesheet" href="/BackEndBlog/assets/css/0.styles.77db9a27.css">
+  </head>
+  <body class="theme-mode-light">
+    <div id="app" data-server-rendered="true"><div class="theme-container sidebar-open have-rightmenu"><header class="navbar blur"><div title="目录" class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/BackEndBlog/" class="home-link router-link-active"><!----> <span class="site-name">麦仁后端博客</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/BackEndBlog/" class="nav-link">首页</a></div><div class="nav-item"><a href="/BackEndBlog/Mysql/" class="nav-link">Mysql</a></div><div class="nav-item"><a href="/BackEndBlog/FastApi/" class="nav-link">FastAPI</a></div><div class="nav-item"><a href="/BackEndBlog/MaintenanceDoc/" class="nav-link">运维相关</a></div><div class="nav-item"><a href="/BackEndBlog/PySyllabus/" class="nav-link">PySyllabus</a></div> <a href="https://github.com/MaiRen1997/Myblog" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <div class="sidebar-hover-trigger"></div> <aside class="sidebar" style="display:none;"><!----> <nav class="nav-links"><div class="nav-item"><a href="/BackEndBlog/" class="nav-link">首页</a></div><div class="nav-item"><a href="/BackEndBlog/Mysql/" class="nav-link">Mysql</a></div><div class="nav-item"><a href="/BackEndBlog/FastApi/" class="nav-link">FastAPI</a></div><div class="nav-item"><a href="/BackEndBlog/MaintenanceDoc/" class="nav-link">运维相关</a></div><div class="nav-item"><a href="/BackEndBlog/PySyllabus/" class="nav-link">PySyllabus</a></div> <a href="https://github.com/MaiRen1997/Myblog" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav>  <ul class="sidebar-links"><li><a href="/BackEndBlog/pages/d68ed9/" class="sidebar-link">实例化与ResetfulAPI的定义</a></li><li><a href="/BackEndBlog/pages/62ccb8/" class="sidebar-link">路由分模块include_router</a></li><li><a href="/BackEndBlog/pages/aad878/" class="sidebar-link">中间件的使用add_middleware</a></li><li><a href="/BackEndBlog/pages/d20f56/" class="sidebar-link">项目目录结构</a></li><li><a href="/BackEndBlog/pages/331a9d/" class="sidebar-link">跨域问题解决</a></li><li><a href="/BackEndBlog/pages/fd8c15/" class="sidebar-link">Python中Request的使用</a></li><li><a href="/BackEndBlog/pages/77a51a/" class="sidebar-link">依赖注入与安全认证</a></li><li><a href="/BackEndBlog/pages/a226ce/" class="sidebar-link">Depends的使用</a></li><li><a href="/BackEndBlog/pages/bf0608/" class="sidebar-link">错误信息的封装</a></li><li><a href="/BackEndBlog/pages/84ecb9/" class="sidebar-link">日志记录-loguru</a></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>项目的使用</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Pydantic+SqlModel的使用</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>asyncio的使用</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>业务逻辑实现</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>常用业务封装</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/BackEndBlog/pages/585626/" aria-current="page" class="active sidebar-link">文件+minio实现上传</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header level2"><a href="/BackEndBlog/pages/585626/#配置变量" class="sidebar-link">配置变量</a></li><li class="sidebar-sub-header level2"><a href="/BackEndBlog/pages/585626/#配置依赖" class="sidebar-link">配置依赖</a></li><li class="sidebar-sub-header level2"><a href="/BackEndBlog/pages/585626/#在controller中实现minio接口" class="sidebar-link">在controller中实现minio接口</a></li><li class="sidebar-sub-header level2"><a href="/BackEndBlog/pages/585626/#前端代码" class="sidebar-link">前端代码</a></li></ul></li><li><a href="/BackEndBlog/pages/b1fee7/" class="sidebar-link">excel的上传与读取</a></li></ul></section></li></ul> </aside> <div><main class="page"><div class="theme-vdoing-wrapper "><div class="articleInfo-wrap" data-v-06225672><div class="articleInfo" data-v-06225672><ul class="breadcrumbs" data-v-06225672><li data-v-06225672><a href="/BackEndBlog/" title="首页" class="iconfont icon-home router-link-active" data-v-06225672></a></li> <li data-v-06225672><a href="/BackEndBlog/FastApi/#FastApi文档" data-v-06225672>FastApi文档</a></li><li data-v-06225672><a href="/BackEndBlog/FastApi/#常用业务封装" data-v-06225672>常用业务封装</a></li></ul> <div class="info" data-v-06225672><div title="作者" class="author iconfont icon-touxiang" data-v-06225672><a href="https://github.com/MaiRen1997" target="_blank" title="作者" class="beLink" data-v-06225672>Riverside Joy</a></div> <div title="创建时间" class="date iconfont icon-riqi" data-v-06225672><a href="javascript:;" data-v-06225672>2026-08-06</a></div> <!----></div></div></div> <!----> <div class="content-wrapper"><div class="right-menu-wrapper"><div class="right-menu-margin"><div class="right-menu-title">目录</div> <div class="right-menu-content"></div></div></div> <h1><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAABKFJREFUSA3tVl1oFVcQnrMbrak3QUgkya1akpJYcrUtIqW1JvFBE9LiQ5v6JmJpolbMg32rVrhgoYK0QiMY6i9Y6EMaW5D+xFJaTYItIuK2Kr3+BJNwkxBj05sQY3b3nM6cs2dv9t7NT/vQJw/sndk5M/PNzJkzewGerP+pAmy+ON8lLzUJgA8ZYxYIYZmGYRnctDaWvJJAmTtfP1pvXsBCCPP8QFcCaRkZYACgDZFO4stNIcBCajEOlmmC9XpJ9bAGCaPaPmzPl32dvLSVu3BWCTQs0XQQ6g0DYgwLIoAZbBCdW/i+781o1VVlm/410mw4h06Y7bIPHNyWDyL4FHkX03Q8SrzNhZTZriieckWt7cL6MM85YcLpsi/7O9/iXFT6MswI0DmmpkSaJ0qLxFIm3+i1THHB3zmBH3PYx9CcykcLOeQVVa7QtdxTgQgEleX2AjHYfwA+2ddV77ruGoJUbhGDI09YSNXyMpUt5ylOzxgbUmtOp7NmbNt8v3arjTBfYELmLUV+M+nSawNNAUqpT3ClJWg5I3BLT+cGW/DXNGCa6tx1aakCGEigArTn4TDIPdrXXYKCZNrHLMCOEPvHBlLQ99s9eHB7EB6NTki73CVPQ2F5MSx/uRQixfmq7rK0wYD8w8E905bnPDfwoWs/rfv93NWN/ZfvwsLIU7A09gxECyISeGJkHAau98L97tuw7NXnoPyNF8FcYGLGKsOs0mN3OEyec9esGW/ZEl945dTP34wlR2FZVQWU1q0Cw8Tr7p+hgLLNL0FPxx/Q35mA8aEUrH6nCgwEl0tn7wUiZYJnNRh6DK4UH/k0lfyrsBKdPVv/AriGIQcEDQZ65LBAGe2Rzui9Ybjz7XUppz1/uKBbyVPGkN3ZAeC6hr0x7Nr38N5+EqkoOm17xpoqR9ohQF55ERSvr4Dkr3chNfC3DMzGJlNBElW8w9nsGQvhNGIzDkXzCg8cLK951xHsFBlTJspJNi3ZFIMF2AeDV3q8DNOB+YHi6QTrChDIWDBRi5U5f+ZMfJLu3ccrqxtdxk4SKH336LFxSmkqefwU5T8fhdSdQf9IVKD6aNiwI/hnmcAZ91isYMJIaCUCx9W098+LgruikeTqzqqxKPUwqJyCPJiyemVVZBOijDGjD38Os0jOiSPL1z3SPjXNANbiNPXAdzTfukjjuknNBbyz3nwgTd3AVFqUJ5hpHlq9MveLnWwttUfoygBmvVjuikxND3znrhsELnZk7k+OjIGxeNEkomyLVta0xxn+HZhjBc4YZ/AFjHjz9u3xRZl2BN4aq9nFwWh16IrQ1aHHEd3j1+4/dB9OtH4e29A2H1DyHQRmOSfQZ1Fy7MHBTGB6J/Djq6p3OxyO2cB+4Car7v/o3GXgfAkj23+x9ID1Teoamo/SXcbvSf2PX7Vc8DdCmE1vN9di+32P9/5YR3vLnhCVGUWBjEkr3yh4H8v9CzmsbdhzOKzsJKM90iFdaTMjRPhGVsakRvOaRidljo6H6G7j+ctrJpsP+4COhDIl0La2+FS4+5mlocBaXY5QnGZysIBYoeSsl5qQzrSj/cgNrfuEzlWBfwA+EjrZyWUvpAAAAABJRU5ErkJggg==">文件+minio实现上传<!----></h1> <!----> <div class="theme-vdoing-content content__default"><h2 id="配置变量"><a href="#配置变量" class="header-anchor">#</a> 配置变量</h2> <h3 id="配置环境变量"><a href="#配置环境变量" class="header-anchor">#</a> 配置环境变量</h3> <p>在项目的.env.dev文件下，新增关于minIO的环境变量</p> <ol><li>配置IP地址 + 端口号</li> <li>配置用户名</li> <li>配置密码</li> <li>配置是否使用HTTPS，True是使用，False是不使用</li> <li>配置桶名称</li></ol> <div class="language-bash line-numbers-mode"><pre class="language-bash"><code><span class="token comment"># -------- minIO文件服务器 --------</span>
+<span class="token assign-left variable">MINIO_ENDPOINT</span><span class="token operator">=</span><span class="token string">&quot;10.13.0.171:9000&quot;</span> 
+<span class="token assign-left variable">MINIO_ACCESS_KEY</span><span class="token operator">=</span><span class="token string">&quot;admin&quot;</span>
+<span class="token assign-left variable">MINIO_SECRET_KEY</span><span class="token operator">=</span><span class="token string">&quot;12345678&quot;</span>
+MINIO_SECURE <span class="token operator">=</span> False  <span class="token comment"># 使用 HTTP</span>
+<span class="token assign-left variable">MINIO_BUCKET_NAME</span><span class="token operator">=</span><span class="token string">&quot;certification&quot;</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br></div></div><h3 id="配置相应的数据类"><a href="#配置相应的数据类" class="header-anchor">#</a> 配置相应的数据类</h3> <p>在/backend/config/env.py文件中，设置环境变量的类，默认值</p> <div class="language-python line-numbers-mode"><pre class="language-python"><code><span class="token keyword">class</span> <span class="token class-name">MinioSettings</span><span class="token punctuation">(</span>BaseSettings<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;
+    MinIO配置
+    &quot;&quot;&quot;</span>
+
+    minio_endpoint<span class="token punctuation">:</span> <span class="token builtin">str</span> <span class="token operator">=</span> <span class="token string">''</span>
+    minio_access_key<span class="token punctuation">:</span> <span class="token builtin">str</span> <span class="token operator">=</span> <span class="token string">''</span>
+    minio_secret_key<span class="token punctuation">:</span> <span class="token builtin">str</span> <span class="token operator">=</span> <span class="token string">''</span>
+    minio_secure<span class="token punctuation">:</span> <span class="token builtin">bool</span> <span class="token operator">=</span> <span class="token boolean">False</span>
+    minio_bucket_name<span class="token punctuation">:</span> <span class="token builtin">str</span> <span class="token operator">=</span> <span class="token string">'certification'</span>
+<span class="token keyword">class</span> <span class="token class-name">GetConfig</span><span class="token punctuation">:</span>
+    <span class="token comment"># 其他的配置，例如mysql，这里可以不用，仅作为什么要封装的说明</span>
+    <span class="token keyword">def</span> <span class="token function">get_database_config</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span> DataBaseSettings<span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;
+        获取数据库配置
+        &quot;&quot;&quot;</span>
+        <span class="token comment"># 实例化数据库配置模型</span>
+        <span class="token keyword">return</span> DataBaseSettings<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">def</span> <span class="token function">get_minio_config</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span> MinioSettings<span class="token punctuation">:</span>
+        <span class="token triple-quoted-string string">&quot;&quot;&quot;
+        获取MinIO配置
+        &quot;&quot;&quot;</span>
+        <span class="token keyword">return</span> MinioSettings<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment"># 实例化获取配置类</span>
+get_config <span class="token operator">=</span> GetConfig<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment"># MinIO配置</span>
+MinioConfig <span class="token operator">=</span> get_config<span class="token punctuation">.</span>get_minio_config<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br></div></div><h2 id="配置依赖"><a href="#配置依赖" class="header-anchor">#</a> 配置依赖</h2> <p>使用uv add minio==7.2.18，在python项目中安装minio依赖</p> <ol><li>最终结果是需要项目中安装上minio的依赖</li> <li>在requirements.txt或者pyproject.toml实现依赖的记录</li></ol> <div class="language-python line-numbers-mode"><pre class="language-python"><code>minio<span class="token operator">==</span><span class="token number">7.2</span><span class="token number">.18</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br></div></div><h2 id="在controller中实现minio接口"><a href="#在controller中实现minio接口" class="header-anchor">#</a> 在controller中实现minio接口</h2> <div class="language-python line-numbers-mode"><pre class="language-python"><code><span class="token keyword">from</span> uuid <span class="token keyword">import</span> uuid4
+<span class="token keyword">from</span> fastapi <span class="token keyword">import</span> File<span class="token punctuation">,</span> Form<span class="token punctuation">,</span> Path<span class="token punctuation">,</span> Query<span class="token punctuation">,</span> Request<span class="token punctuation">,</span> Response<span class="token punctuation">,</span> UploadFile
+<span class="token keyword">from</span> minio <span class="token keyword">import</span> Minio
+<span class="token keyword">from</span> datetime <span class="token keyword">import</span> datetime
+<span class="token keyword">from</span> io <span class="token keyword">import</span> BytesIO
+<span class="token keyword">from</span> minio<span class="token punctuation">.</span>error <span class="token keyword">import</span> S3Error
+<span class="token keyword">from</span> common<span class="token punctuation">.</span>vo <span class="token keyword">import</span> DataResponseModel<span class="token punctuation">,</span> DynamicResponseModel<span class="token punctuation">,</span> PageResponseModel<span class="token punctuation">,</span> ResponseBaseModel
+<span class="token keyword">from</span> config<span class="token punctuation">.</span>env <span class="token keyword">import</span> MinioConfig
+<span class="token keyword">from</span> exceptions<span class="token punctuation">.</span>exception <span class="token keyword">import</span> ServiceException
+<span class="token keyword">from</span> module_admin<span class="token punctuation">.</span>entity<span class="token punctuation">.</span>vo<span class="token punctuation">.</span>common_vo <span class="token keyword">import</span> UploadResponseModel
+<span class="token keyword">from</span> module_certification<span class="token punctuation">.</span>service<span class="token punctuation">.</span>certification_service <span class="token keyword">import</span> CertificationService
+
+
+<span class="token keyword">def</span> <span class="token function">_get_minio_client_and_endpoint</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span> <span class="token builtin">tuple</span><span class="token punctuation">[</span>Minio<span class="token punctuation">,</span> <span class="token builtin">str</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+    endpoint <span class="token operator">=</span> MinioConfig<span class="token punctuation">.</span>minio_endpoint<span class="token punctuation">.</span>strip<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token keyword">not</span> endpoint<span class="token punctuation">:</span>
+        <span class="token keyword">raise</span> ServiceException<span class="token punctuation">(</span>message<span class="token operator">=</span><span class="token string">'MINIO_ENDPOINT未配置'</span><span class="token punctuation">)</span>
+
+    normalized_endpoint <span class="token operator">=</span> endpoint
+    <span class="token keyword">if</span> normalized_endpoint<span class="token punctuation">.</span>startswith<span class="token punctuation">(</span><span class="token string">'http://'</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        normalized_endpoint <span class="token operator">=</span> normalized_endpoint<span class="token punctuation">[</span><span class="token builtin">len</span><span class="token punctuation">(</span><span class="token string">'http://'</span><span class="token punctuation">)</span> <span class="token punctuation">:</span><span class="token punctuation">]</span>
+    <span class="token keyword">elif</span> normalized_endpoint<span class="token punctuation">.</span>startswith<span class="token punctuation">(</span><span class="token string">'https://'</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        normalized_endpoint <span class="token operator">=</span> normalized_endpoint<span class="token punctuation">[</span><span class="token builtin">len</span><span class="token punctuation">(</span><span class="token string">'https://'</span><span class="token punctuation">)</span> <span class="token punctuation">:</span><span class="token punctuation">]</span>
+
+    <span class="token keyword">if</span> <span class="token keyword">not</span> MinioConfig<span class="token punctuation">.</span>minio_access_key <span class="token keyword">or</span> <span class="token keyword">not</span> MinioConfig<span class="token punctuation">.</span>minio_secret_key<span class="token punctuation">:</span>
+        <span class="token keyword">raise</span> ServiceException<span class="token punctuation">(</span>message<span class="token operator">=</span><span class="token string">'MINIO访问密钥未配置'</span><span class="token punctuation">)</span>
+
+    client <span class="token operator">=</span> Minio<span class="token punctuation">(</span>
+        endpoint<span class="token operator">=</span>normalized_endpoint<span class="token punctuation">,</span>
+        access_key<span class="token operator">=</span>MinioConfig<span class="token punctuation">.</span>minio_access_key<span class="token punctuation">,</span>
+        secret_key<span class="token operator">=</span>MinioConfig<span class="token punctuation">.</span>minio_secret_key<span class="token punctuation">,</span>
+        secure<span class="token operator">=</span>MinioConfig<span class="token punctuation">.</span>minio_secure<span class="token punctuation">,</span>
+    <span class="token punctuation">)</span>
+
+    <span class="token keyword">return</span> client<span class="token punctuation">,</span> normalized_endpoint
+
+
+<span class="token decorator annotation punctuation">@certification_controller<span class="token punctuation">.</span>post</span><span class="token punctuation">(</span>
+    <span class="token string">'/upload'</span><span class="token punctuation">,</span>
+    summary<span class="token operator">=</span><span class="token string">'上传证书文件接口'</span><span class="token punctuation">,</span>
+    description<span class="token operator">=</span><span class="token string">'用于上传证书文件到MinIO并返回文件访问地址'</span><span class="token punctuation">,</span>
+    response_model<span class="token operator">=</span>DynamicResponseModel<span class="token punctuation">[</span>UploadResponseModel<span class="token punctuation">]</span><span class="token punctuation">,</span>
+    dependencies<span class="token operator">=</span><span class="token punctuation">[</span>UserInterfaceAuthDependency<span class="token punctuation">(</span><span class="token string">'certification:certification:add'</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+<span class="token punctuation">)</span>
+<span class="token keyword">async</span> <span class="token keyword">def</span> <span class="token function">upload_certification_file</span><span class="token punctuation">(</span>request<span class="token punctuation">:</span> Request<span class="token punctuation">,</span> <span class="token builtin">file</span><span class="token punctuation">:</span> Annotated<span class="token punctuation">[</span>UploadFile<span class="token punctuation">,</span> File<span class="token punctuation">(</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span> Response<span class="token punctuation">:</span>
+    <span class="token keyword">if</span> <span class="token keyword">not</span> <span class="token builtin">file</span><span class="token punctuation">.</span>filename<span class="token punctuation">:</span>
+        <span class="token keyword">raise</span> ServiceException<span class="token punctuation">(</span>message<span class="token operator">=</span><span class="token string">'文件名不能为空'</span><span class="token punctuation">)</span>
+
+    bucket_name <span class="token operator">=</span> MinioConfig<span class="token punctuation">.</span>minio_bucket_name<span class="token punctuation">.</span>strip<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token keyword">not</span> bucket_name<span class="token punctuation">:</span>
+        <span class="token keyword">raise</span> ServiceException<span class="token punctuation">(</span>message<span class="token operator">=</span><span class="token string">'MINIO_BUCKET_NAME未配置'</span><span class="token punctuation">)</span>
+
+    minio_client<span class="token punctuation">,</span> endpoint <span class="token operator">=</span> _get_minio_client_and_endpoint<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    now <span class="token operator">=</span> datetime<span class="token punctuation">.</span>now<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    file_ext <span class="token operator">=</span> <span class="token builtin">file</span><span class="token punctuation">.</span>filename<span class="token punctuation">.</span>rsplit<span class="token punctuation">(</span><span class="token string">'.'</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token keyword">if</span> <span class="token string">'.'</span> <span class="token keyword">in</span> <span class="token builtin">file</span><span class="token punctuation">.</span>filename <span class="token keyword">else</span> <span class="token string">''</span>
+    object_name <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f'certification/</span><span class="token interpolation"><span class="token punctuation">{</span>now<span class="token punctuation">.</span>strftime<span class="token punctuation">(</span><span class="token string">&quot;%Y/%m/%d&quot;</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span><span class="token string">/</span><span class="token interpolation"><span class="token punctuation">{</span>uuid4<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token builtin">hex</span><span class="token punctuation">}</span></span><span class="token string">'</span></span>
+    <span class="token keyword">if</span> file_ext<span class="token punctuation">:</span>
+        object_name <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f'</span><span class="token interpolation"><span class="token punctuation">{</span>object_name<span class="token punctuation">}</span></span><span class="token string">.</span><span class="token interpolation"><span class="token punctuation">{</span>file_ext<span class="token punctuation">}</span></span><span class="token string">'</span></span>
+
+    file_content <span class="token operator">=</span> <span class="token keyword">await</span> <span class="token builtin">file</span><span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">if</span> <span class="token keyword">not</span> file_content<span class="token punctuation">:</span>
+        <span class="token keyword">raise</span> ServiceException<span class="token punctuation">(</span>message<span class="token operator">=</span><span class="token string">'上传文件不能为空'</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">try</span><span class="token punctuation">:</span>
+        <span class="token keyword">if</span> <span class="token keyword">not</span> minio_client<span class="token punctuation">.</span>bucket_exists<span class="token punctuation">(</span>bucket_name<span class="token punctuation">)</span><span class="token punctuation">:</span>
+            minio_client<span class="token punctuation">.</span>make_bucket<span class="token punctuation">(</span>bucket_name<span class="token punctuation">)</span>
+
+        minio_client<span class="token punctuation">.</span>put_object<span class="token punctuation">(</span>
+            bucket_name<span class="token operator">=</span>bucket_name<span class="token punctuation">,</span>
+            object_name<span class="token operator">=</span>object_name<span class="token punctuation">,</span>
+            data<span class="token operator">=</span>BytesIO<span class="token punctuation">(</span>file_content<span class="token punctuation">)</span><span class="token punctuation">,</span>
+            length<span class="token operator">=</span><span class="token builtin">len</span><span class="token punctuation">(</span>file_content<span class="token punctuation">)</span><span class="token punctuation">,</span>
+            content_type<span class="token operator">=</span><span class="token builtin">file</span><span class="token punctuation">.</span>content_type <span class="token keyword">or</span> <span class="token string">'application/octet-stream'</span><span class="token punctuation">,</span>
+        <span class="token punctuation">)</span>
+    <span class="token keyword">except</span> S3Error <span class="token keyword">as</span> e<span class="token punctuation">:</span>
+        logger<span class="token punctuation">.</span>error<span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f'MinIO上传失败: </span><span class="token interpolation"><span class="token punctuation">{</span>e<span class="token punctuation">}</span></span><span class="token string">'</span></span><span class="token punctuation">)</span>
+        <span class="token keyword">raise</span> ServiceException<span class="token punctuation">(</span>message<span class="token operator">=</span><span class="token string">'文件上传失败'</span><span class="token punctuation">)</span> <span class="token keyword">from</span> e
+
+    protocol <span class="token operator">=</span> <span class="token string">'https'</span> <span class="token keyword">if</span> MinioConfig<span class="token punctuation">.</span>minio_secure <span class="token keyword">else</span> <span class="token string">'http'</span>
+    file_url <span class="token operator">=</span> <span class="token string-interpolation"><span class="token string">f'</span><span class="token interpolation"><span class="token punctuation">{</span>protocol<span class="token punctuation">}</span></span><span class="token string">://</span><span class="token interpolation"><span class="token punctuation">{</span>endpoint<span class="token punctuation">}</span></span><span class="token string">/</span><span class="token interpolation"><span class="token punctuation">{</span>bucket_name<span class="token punctuation">}</span></span><span class="token string">/</span><span class="token interpolation"><span class="token punctuation">{</span>object_name<span class="token punctuation">}</span></span><span class="token string">'</span></span>
+    response_data <span class="token operator">=</span> UploadResponseModel<span class="token punctuation">(</span>
+        file_name<span class="token operator">=</span>object_name<span class="token punctuation">,</span>
+        new_file_name<span class="token operator">=</span>object_name<span class="token punctuation">.</span>rsplit<span class="token punctuation">(</span><span class="token string">'/'</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        original_filename<span class="token operator">=</span><span class="token builtin">file</span><span class="token punctuation">.</span>filename<span class="token punctuation">,</span>
+        url<span class="token operator">=</span>file_url<span class="token punctuation">,</span>
+    <span class="token punctuation">)</span>
+    logger<span class="token punctuation">.</span>info<span class="token punctuation">(</span><span class="token string">'证书文件上传成功'</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">return</span> ResponseUtil<span class="token punctuation">.</span>success<span class="token punctuation">(</span>model_content<span class="token operator">=</span>response_data<span class="token punctuation">)</span>
+
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br></div></div><h2 id="前端代码"><a href="#前端代码" class="header-anchor">#</a> 前端代码</h2> <h3 id="js接口请求代码"><a href="#js接口请求代码" class="header-anchor">#</a> JS接口请求代码</h3> <div class="language-js line-numbers-mode"><pre class="language-js"><code><span class="token comment">// 上传证书文件</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">uploadCertificationFile</span><span class="token punctuation">(</span><span class="token parameter">data</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token function">request</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token literal-property property">url</span><span class="token operator">:</span> baseUrl <span class="token operator">+</span> <span class="token string">'/upload'</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">method</span><span class="token operator">:</span> <span class="token string">'post'</span><span class="token punctuation">,</span>
+    <span class="token literal-property property">headers</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token string-property property">'Content-Type'</span><span class="token operator">:</span> <span class="token string">'multipart/form-data'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    data
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br></div></div><h3 id="react-中minio相关代码"><a href="#react-中minio相关代码" class="header-anchor">#</a> react 中minio相关代码</h3> <div class="language-react line-numbers-mode"><pre class="language-text"><code>import { ProFormUploadButton } from '@ant-design/pro-components';
+import type { UploadFile, UploadProps } from 'antd';
+import {uploadCertificationFile} from '@/api/contractManage/certificateManage';
+
+type UploadResponseData = {
+  fileName?: string;
+  newFileName?: string;
+  originalFilename?: string;
+  url?: string;
+};
+
+type UploadApiResponse = {
+  data?: UploadResponseData;
+  url?: string;
+  fileName?: string;
+  newFileName?: string;
+  originalFilename?: string;
+};
+
+type CertificationFormValues = Omit&lt;CertificationItem, 'fileUrl' | 'startDate' | 'expiredTime'&gt; &amp; {
+  fileUrl?: UploadFile[];
+  startDate?: Dayjs | string;
+  expiredTime?: Dayjs | string;
+};
+
+const toUploadFileList = (url?: string): UploadFile[] =&gt; {
+    if (!url) {
+        return [];
+    }
+
+    const fileName = decodeURIComponent(url.split('/').pop() || 'certificate-file');
+    return [
+        {
+            uid: url,
+            name: fileName,
+            status: 'done',
+            url,
+            response: { data: { url } },
+        },
+    ];
+};
+
+const extractUploadedUrl = (value?: UploadFile[] | string): string | undefined =&gt; {
+    if (!value) {
+        return undefined;
+    }
+
+    if (typeof value === 'string') {
+        return value;
+    }
+
+    const firstFile = value[0];
+    if (!firstFile) {
+        return undefined;
+    }
+
+    const response = firstFile.response as UploadApiResponse | undefined;
+    return response?.data?.url || response?.url || firstFile.url;
+};
+
+
+const formInitialValues = useMemo&lt;CertificationFormValues&gt;(() =&gt; {
+    return {
+        ...editing,
+        fileUrl: toUploadFileList(editing.fileUrl),
+    };
+}, [editing]);
+
+const uploadFieldProps: UploadProps = {
+    name: 'file',
+    maxCount: 1,
+    customRequest: async (options) =&gt; {
+        const { file, onSuccess, onError } = options;
+        try {
+            const formData = new FormData();
+            const rawFile = file as File;
+            formData.append('file', rawFile, rawFile.name || 'upload-file');
+
+            const response = (await uploadCertificationFile(formData)) as UploadApiResponse;
+            const result = response.data || response;
+            const uploadResult: UploadResponseData = {
+                fileName: result.fileName,
+                newFileName: result.newFileName,
+                originalFilename: result.originalFilename,
+                url: result.url,
+            };
+
+            onSuccess?.({ data: uploadResult } as UploadApiResponse);
+        } catch (error) {
+            const err = error as Error;
+            message.error(err.message || '上传失败，请稍后重试');
+            onError?.(err);
+        }
+    },
+};
+
+
+
+&lt;ProFormUploadButton
+    name=&quot;fileUrl&quot;
+    label=&quot;证书文件&quot;
+    max={1}
+    fieldProps={uploadFieldProps}
+    extra=&quot;上传后将自动填充可访问的文件链接&quot;
+/&gt;
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br><span class="line-number">103</span><br><span class="line-number">104</span><br><span class="line-number">105</span><br></div></div><h3 id="react完整代码"><a href="#react完整代码" class="header-anchor">#</a> react完整代码</h3> <div class="language-react line-numbers-mode"><pre class="language-text"><code>import {
+  DeleteOutlined,
+  DownloadOutlined,
+  EditOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
+import {
+  ActionType,
+  ModalForm,
+  PageContainer,
+  ProColumns,
+  ProFormDatePicker,
+  ProFormRadio,
+  ProFormText,
+  ProFormUploadButton,
+  ProTable,
+} from '@ant-design/pro-components';
+import { App, Button, Space, Tag, Tooltip } from 'antd';
+import type { UploadFile, UploadProps } from 'antd';
+import type { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { getInfo } from '@/api/login';
+import {
+  addCertification,
+  delCertification,
+  getCertification,
+  listCertification,
+  uploadCertificationFile,
+  updateCertification,
+} from '@/api/contractManage/certificateManage';
+import { getDicts } from '@/api/system/dict/data';
+import request from '@/utils/request';
+
+type CertificationStatus = '0' | '1' | string;
+
+type CertificationItem = {
+  id?: number;
+  certificationNo?: string;
+  reportNo?: string;
+  productName?: string;
+  productSerial?: string;
+  factory?: string;
+  issuingAuthority?: string;
+  fileUrl?: string;
+  startDate?: string;
+  expiredTime?: string;
+  status?: CertificationStatus;
+  deptId?: number;
+};
+
+type QueryParams = {
+  pageNum: number;
+  pageSize: number;
+  certificationNo?: string;
+  reportNo?: string;
+  productName?: string;
+  productSerial?: string;
+  factory?: string;
+  issuingAuthority?: string;
+  fileUrl?: string;
+  startDate?: string;
+  expiredTime?: string;
+  status?: CertificationStatus;
+  deptId?: number;
+};
+
+type SearchFormValues = {
+  certificationNo?: string;
+  reportNo?: string;
+  productName?: string;
+  productSerial?: string;
+  factory?: string;
+  issuingAuthority?: string;
+  fileUrl?: string;
+  startDate?: Dayjs | string;
+  expiredTime?: Dayjs | string;
+  status?: CertificationStatus;
+  deptId?: number;
+};
+
+type ListResponse = {
+  rows?: CertificationItem[];
+  total?: number;
+};
+
+type DetailResponse = {
+  data?: CertificationItem;
+};
+
+type UploadResponseData = {
+  fileName?: string;
+  newFileName?: string;
+  originalFilename?: string;
+  url?: string;
+};
+
+type UploadApiResponse = {
+  data?: UploadResponseData;
+  url?: string;
+  fileName?: string;
+  newFileName?: string;
+  originalFilename?: string;
+};
+
+type CertificationFormValues = Omit&lt;CertificationItem, 'fileUrl' | 'startDate' | 'expiredTime'&gt; &amp; {
+  fileUrl?: UploadFile[];
+  startDate?: Dayjs | string;
+  expiredTime?: Dayjs | string;
+};
+
+type DictOption = {
+  label: string;
+  value: string;
+};
+
+type DictItem = {
+  dictLabel?: string;
+  dictValue?: string;
+  label?: string;
+  value?: string;
+};
+
+type DictResponse = {
+  data?: DictItem[];
+};
+
+type GetInfoResponse = {
+  permissions?: string[];
+  roles?: string[];
+};
+
+const defaultStatusOptions: DictOption[] = [
+  { label: '正常', value: '0' },
+  { label: '停用', value: '1' },
+];
+
+const defaultFormValues = (): CertificationItem =&gt; ({
+  id: undefined,
+  certificationNo: undefined,
+  reportNo: undefined,
+  productName: undefined,
+  productSerial: undefined,
+  factory: undefined,
+  issuingAuthority: undefined,
+  fileUrl: undefined,
+  startDate: undefined,
+  expiredTime: undefined,
+  status: '0',
+  deptId: undefined,
+});
+
+const toDateString = (value: Dayjs | string | undefined) =&gt; {
+  if (!value) {
+    return undefined;
+  }
+
+  if (typeof value === 'string') {
+    return value;
+  }
+
+  return value.format('YYYY-MM-DD');
+};
+
+const toUploadFileList = (url?: string): UploadFile[] =&gt; {
+  if (!url) {
+    return [];
+  }
+
+  const fileName = decodeURIComponent(url.split('/').pop() || 'certificate-file');
+  return [
+    {
+      uid: url,
+      name: fileName,
+      status: 'done',
+      url,
+      response: { data: { url } },
+    },
+  ];
+};
+
+const extractUploadedUrl = (value?: UploadFile[] | string): string | undefined =&gt; {
+  if (!value) {
+    return undefined;
+  }
+
+  if (typeof value === 'string') {
+    return value;
+  }
+
+  const firstFile = value[0];
+  if (!firstFile) {
+    return undefined;
+  }
+
+  const response = firstFile.response as UploadApiResponse | undefined;
+  return response?.data?.url || response?.url || firstFile.url;
+};
+
+const CertificationPage: React.FC = () =&gt; {
+  const { message, modal } = App.useApp();
+  const actionRef = useRef&lt;ActionType | undefined&gt;(undefined);
+
+  const allPermission = '*:*:*';
+  const superAdminRole = 'admin';
+
+  const [open, setOpen] = useState(false);
+  const [title, setTitle] = useState('');
+  const [editing, setEditing] = useState&lt;CertificationItem&gt;(defaultFormValues());
+  const [selectedRowKeys, setSelectedRowKeys] = useState&lt;React.Key[]&gt;([]);
+  const [permissions, setPermissions] = useState&lt;string[]&gt;([]);
+  const [roles, setRoles] = useState&lt;string[]&gt;([]);
+  const [statusOptions, setStatusOptions] = useState&lt;DictOption[]&gt;(defaultStatusOptions);
+  const [lastQuery, setLastQuery] = useState&lt;QueryParams&gt;({
+    pageNum: 1,
+    pageSize: 10,
+    certificationNo: undefined,
+    reportNo: undefined,
+    productName: undefined,
+    productSerial: undefined,
+    factory: undefined,
+    issuingAuthority: undefined,
+    fileUrl: undefined,
+    startDate: undefined,
+    expiredTime: undefined,
+    status: undefined,
+    deptId: undefined,
+  });
+
+  const single = selectedRowKeys.length !== 1;
+  const multiple = selectedRowKeys.length === 0;
+
+  const hasPermission = (perm: string) =&gt; {
+    return (
+      permissions.length === 0 ||
+      roles.includes(superAdminRole) ||
+      permissions.includes(allPermission) ||
+      permissions.includes(perm)
+    );
+  };
+
+  const statusLabelMap = useMemo(() =&gt; {
+    return statusOptions.reduce&lt;Record&lt;string, string&gt;&gt;((acc, item) =&gt; {
+      acc[item.value] = item.label;
+      return acc;
+    }, {});
+  }, [statusOptions]);
+
+  const formInitialValues = useMemo&lt;CertificationFormValues&gt;(() =&gt; {
+    return {
+      ...editing,
+      fileUrl: toUploadFileList(editing.fileUrl),
+    };
+  }, [editing]);
+
+  const uploadFieldProps: UploadProps = {
+    name: 'file',
+    maxCount: 1,
+    customRequest: async (options) =&gt; {
+      const { file, onSuccess, onError } = options;
+      try {
+        const formData = new FormData();
+        const rawFile = file as File;
+        formData.append('file', rawFile, rawFile.name || 'upload-file');
+
+        const response = (await uploadCertificationFile(formData)) as UploadApiResponse;
+        const result = response.data || response;
+        const uploadResult: UploadResponseData = {
+          fileName: result.fileName,
+          newFileName: result.newFileName,
+          originalFilename: result.originalFilename,
+          url: result.url,
+        };
+
+        onSuccess?.({ data: uploadResult } as UploadApiResponse);
+      } catch (error) {
+        const err = error as Error;
+        message.error(err.message || '上传失败，请稍后重试');
+        onError?.(err);
+      }
+    },
+  };
+
+  useEffect(() =&gt; {
+    getInfo()
+      .then((response: unknown) =&gt; {
+        const result = response as GetInfoResponse;
+        setPermissions(result.permissions || []);
+        setRoles(result.roles || []);
+      })
+      .catch(() =&gt; {
+        setPermissions([]);
+        setRoles([]);
+      });
+
+    getDicts('sys_normal_disable')
+      .then((response: unknown) =&gt; {
+        const result = response as DictResponse;
+        const options = (result.data || [])
+          .map((item) =&gt; ({
+            label: item.label || item.dictLabel || '',
+            value: item.value || item.dictValue || '',
+          }))
+          .filter((item) =&gt; item.value);
+
+        if (options.length &gt; 0) {
+          setStatusOptions(options);
+        }
+      })
+      .catch(() =&gt; {
+        setStatusOptions(defaultStatusOptions);
+      });
+  }, []);
+
+  const handleAdd = () =&gt; {
+    setEditing(defaultFormValues());
+    setTitle('添加证书记录');
+    setOpen(true);
+  };
+
+  const handleUpdate = async (row?: CertificationItem) =&gt; {
+    const id = row?.id ?? Number(selectedRowKeys[0]);
+    if (!id) {
+      return;
+    }
+
+    const response = (await getCertification(id)) as DetailResponse;
+    setEditing(response.data || defaultFormValues());
+    setTitle('修改证书记录');
+    setOpen(true);
+  };
+
+  const handleDelete = (row?: CertificationItem) =&gt; {
+    const ids = row?.id ?? selectedRowKeys.join(',');
+    if (!ids) {
+      return;
+    }
+
+    modal.confirm({
+      title: `是否确认删除证书记录编号为&quot;${ids}&quot;的数据项？`,
+      okText: '确定',
+      cancelText: '取消',
+      onOk: async () =&gt; {
+        await delCertification(ids);
+        message.success('删除成功');
+        setSelectedRowKeys([]);
+        await actionRef.current?.reload();
+      },
+    });
+  };
+
+  const handleExport = async () =&gt; {
+    const blob = await request&lt;Blob&gt;({
+      url: '/certification/export',
+      method: 'post',
+      data: {
+        ...lastQuery,
+      },
+      responseType: 'blob',
+    });
+
+    const url = window.URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `certification_${Date.now()}.xlsx`;
+    anchor.click();
+    window.URL.revokeObjectURL(url);
+  };
+
+  const columns: ProColumns&lt;CertificationItem&gt;[] = [
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      align: 'center',
+      width: 90,
+      search: false,
+    },
+    {
+      title: '证书编号',
+      dataIndex: 'certificationNo',
+      align: 'center',
+      ellipsis: true,
+    },
+    {
+      title: '报告编号',
+      dataIndex: 'reportNo',
+      align: 'center',
+      ellipsis: true,
+    },
+    {
+      title: '产品名称',
+      dataIndex: 'productName',
+      align: 'center',
+      ellipsis: true,
+    },
+    {
+      title: '产品型号',
+      dataIndex: 'productSerial',
+      align: 'center',
+      ellipsis: true,
+    },
+    {
+      title: '制造单位',
+      dataIndex: 'factory',
+      align: 'center',
+      ellipsis: true,
+    },
+    {
+      title: '发证机构',
+      dataIndex: 'issuingAuthority',
+      align: 'center',
+      ellipsis: true,
+    },
+    {
+      title: '证书文件链接',
+      dataIndex: 'fileUrl',
+      align: 'center',
+      ellipsis: true,
+      render: (_, record) =&gt; {
+        const url = record.fileUrl;
+        if (!url) {
+          return '-';
+        }
+        return (
+          &lt;a href={url} target=&quot;_blank&quot; rel=&quot;noreferrer&quot;&gt;
+            查看文件
+          &lt;/a&gt;
+        );
+      },
+    },
+    {
+      title: '证件生效日期',
+      dataIndex: 'startDate',
+      align: 'center',
+      valueType: 'date',
+      render: (_, record) =&gt; (record.startDate ? dayjs(record.startDate).format('YYYY-MM-DD') : '-'),
+    },
+    {
+      title: '证件过期日期',
+      dataIndex: 'expiredTime',
+      align: 'center',
+      valueType: 'date',
+      render: (_, record) =&gt; (record.expiredTime ? dayjs(record.expiredTime).format('YYYY-MM-DD') : '-'),
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      align: 'center',
+      valueType: 'select',
+      valueEnum: statusOptions.reduce&lt;Record&lt;string, { text: string }&gt;&gt;((acc, item) =&gt; {
+        acc[item.value] = { text: item.label };
+        return acc;
+      }, {}),
+      render: (_, record) =&gt; {
+        const statusValue = record.status || '';
+        return (
+          &lt;Tag color={statusValue === '0' ? 'success' : 'error'}&gt;
+            {statusLabelMap[statusValue] || statusValue || '-'}
+          &lt;/Tag&gt;
+        );
+      },
+    },
+    {
+      title: '部门ID',
+      dataIndex: 'deptId',
+      align: 'center',
+      valueType: 'digit',
+    },
+    {
+      title: '操作',
+      valueType: 'option',
+      align: 'center',
+      width: 130,
+      render: (_text, record) =&gt; (
+        &lt;Space&gt;
+          {hasPermission('certification:certification:edit') ? (
+            &lt;Tooltip title=&quot;修改&quot;&gt;
+              &lt;Button type=&quot;link&quot; icon={&lt;EditOutlined /&gt;} onClick={() =&gt; void handleUpdate(record)}&gt;
+              &lt;/Button&gt;
+            &lt;/Tooltip&gt;
+          ) : null}
+          {hasPermission('certification:certification:remove') ? (
+            &lt;Tooltip title=&quot;删除&quot;&gt;
+              &lt;Button type=&quot;link&quot; danger icon={&lt;DeleteOutlined /&gt;} onClick={() =&gt; handleDelete(record)}&gt;
+              &lt;/Button&gt;
+            &lt;/Tooltip&gt;
+          ) : null}
+        &lt;/Space&gt;
+      ),
+      search: false,
+    },
+  ];
+
+  return (
+    &lt;PageContainer title={false}&gt;
+      &lt;ProTable&lt;CertificationItem, SearchFormValues&gt;
+        rowKey=&quot;id&quot;
+        actionRef={actionRef}
+        columns={columns}
+        pagination={{
+          pageSize: 10,
+          showSizeChanger: true,
+        }}
+        rowSelection={{
+          selectedRowKeys,
+          onChange: (keys) =&gt; setSelectedRowKeys(keys),
+        }}
+        request={async (params) =&gt; {
+          const payload: QueryParams = {
+            pageNum: params.current || 1,
+            pageSize: params.pageSize || 10,
+            certificationNo: params.certificationNo,
+            reportNo: params.reportNo,
+            productName: params.productName,
+            productSerial: params.productSerial,
+            factory: params.factory,
+            issuingAuthority: params.issuingAuthority,
+            fileUrl: params.fileUrl,
+            startDate: toDateString(params.startDate),
+            expiredTime: toDateString(params.expiredTime),
+            status: params.status,
+            deptId: params.deptId,
+          };
+
+          setLastQuery(payload);
+          const response = (await listCertification(payload)) as ListResponse;
+
+          return {
+            data: response.rows || [],
+            success: true,
+            total: response.total || 0,
+          };
+        }}
+        toolBarRender={() =&gt; {
+          const actions: React.ReactNode[] = [];
+
+          if (hasPermission('certification:certification:add')) {
+            actions.push(
+              &lt;Button key=&quot;add&quot; type=&quot;primary&quot; icon={&lt;PlusOutlined /&gt;} onClick={handleAdd}&gt;
+                新增
+              &lt;/Button&gt;,
+            );
+          }
+
+          if (hasPermission('certification:certification:edit')) {
+            actions.push(
+              &lt;Button key=&quot;edit&quot; icon={&lt;EditOutlined /&gt;} disabled={single} onClick={() =&gt; void handleUpdate()}&gt;
+                修改
+              &lt;/Button&gt;,
+            );
+          }
+
+          if (hasPermission('certification:certification:remove')) {
+            actions.push(
+              &lt;Button key=&quot;delete&quot; danger icon={&lt;DeleteOutlined /&gt;} disabled={multiple} onClick={() =&gt; handleDelete()}&gt;
+                删除
+              &lt;/Button&gt;,
+            );
+          }
+
+          if (hasPermission('certification:certification:export')) {
+            actions.push(
+              &lt;Button key=&quot;export&quot; icon={&lt;DownloadOutlined /&gt;} onClick={() =&gt; void handleExport()}&gt;
+                导出
+              &lt;/Button&gt;,
+            );
+          }
+
+          return actions;
+        }}
+        search={{
+          labelWidth: 'auto',
+          searchText: '搜索',
+          resetText: '重置',
+        }}
+        options={{
+          reload: true,
+          density: false,
+          setting: false,
+          search: false,
+        }}
+        dateFormatter={false}
+      /&gt;
+
+      &lt;ModalForm&lt;CertificationFormValues&gt;
+        title={title}
+        open={open}
+        initialValues={formInitialValues}
+        onOpenChange={setOpen}
+        modalProps={{
+          destroyOnClose: true,
+          onCancel: () =&gt; setOpen(false),
+        }}
+        onFinish={async (values) =&gt; {
+          const fileUrl = extractUploadedUrl(values.fileUrl);
+          const payload: CertificationItem = {
+            ...values,
+            fileUrl,
+            startDate: toDateString(values.startDate as Dayjs | string | undefined),
+            expiredTime: toDateString(values.expiredTime as Dayjs | string | undefined),
+          };
+
+          if (payload.id !== undefined) {
+            await updateCertification(payload);
+            message.success('修改成功');
+          } else {
+            await addCertification(payload);
+            message.success('新增成功');
+          }
+
+          setOpen(false);
+          await actionRef.current?.reload();
+          return true;
+        }}
+        submitter={{
+          searchConfig: {
+            submitText: '确定',
+            resetText: '取消',
+          },
+          resetButtonProps: {
+            onClick: () =&gt; setOpen(false),
+          },
+        }}
+      &gt;
+        &lt;ProFormText name=&quot;id&quot; hidden /&gt;
+        &lt;ProFormText
+          name=&quot;certificationNo&quot;
+          label=&quot;证书编号&quot;
+          placeholder=&quot;请输入证书编号&quot;
+          rules={[{ required: true, message: '证书编号不能为空' }]}
+        /&gt;
+        &lt;ProFormText name=&quot;reportNo&quot; label=&quot;报告编号&quot; placeholder=&quot;请输入报告编号&quot; /&gt;
+        &lt;ProFormText name=&quot;productName&quot; label=&quot;产品名称&quot; placeholder=&quot;请输入产品名称&quot; /&gt;
+        &lt;ProFormText name=&quot;productSerial&quot; label=&quot;产品型号&quot; placeholder=&quot;请输入产品型号&quot; /&gt;
+        &lt;ProFormText name=&quot;factory&quot; label=&quot;制造单位&quot; placeholder=&quot;请输入制造单位&quot; /&gt;
+        &lt;ProFormText name=&quot;issuingAuthority&quot; label=&quot;发证机构&quot; placeholder=&quot;请输入发证机构&quot; /&gt;
+        &lt;ProFormUploadButton
+          name=&quot;fileUrl&quot;
+          label=&quot;证书文件&quot;
+          max={1}
+          fieldProps={uploadFieldProps}
+          extra=&quot;上传后将自动填充可访问的文件链接&quot;
+        /&gt;
+        &lt;ProFormDatePicker
+          name=&quot;startDate&quot;
+          label=&quot;证件生效日期&quot;
+          fieldProps={{ format: 'YYYY-MM-DD' }}
+          rules={[{ required: true, message: '证件生效日期不能为空' }]}
+        /&gt;
+        &lt;ProFormDatePicker
+          name=&quot;expiredTime&quot;
+          label=&quot;证件过期日期&quot;
+          fieldProps={{ format: 'YYYY-MM-DD' }}
+        /&gt;
+        &lt;ProFormRadio.Group name=&quot;status&quot; label=&quot;状态&quot; options={statusOptions} /&gt;
+        &lt;ProFormText
+          name=&quot;deptId&quot;
+          label=&quot;部门ID&quot;
+          placeholder=&quot;请输入部门ID&quot;
+          rules={[{ required: true, message: '部门ID不能为空' }]}
+        /&gt;
+      &lt;/ModalForm&gt;
+    &lt;/PageContainer&gt;
+  );
+};
+
+export default CertificationPage;
+
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br><span class="line-number">103</span><br><span class="line-number">104</span><br><span class="line-number">105</span><br><span class="line-number">106</span><br><span class="line-number">107</span><br><span class="line-number">108</span><br><span class="line-number">109</span><br><span class="line-number">110</span><br><span class="line-number">111</span><br><span class="line-number">112</span><br><span class="line-number">113</span><br><span class="line-number">114</span><br><span class="line-number">115</span><br><span class="line-number">116</span><br><span class="line-number">117</span><br><span class="line-number">118</span><br><span class="line-number">119</span><br><span class="line-number">120</span><br><span class="line-number">121</span><br><span class="line-number">122</span><br><span class="line-number">123</span><br><span class="line-number">124</span><br><span class="line-number">125</span><br><span class="line-number">126</span><br><span class="line-number">127</span><br><span class="line-number">128</span><br><span class="line-number">129</span><br><span class="line-number">130</span><br><span class="line-number">131</span><br><span class="line-number">132</span><br><span class="line-number">133</span><br><span class="line-number">134</span><br><span class="line-number">135</span><br><span class="line-number">136</span><br><span class="line-number">137</span><br><span class="line-number">138</span><br><span class="line-number">139</span><br><span class="line-number">140</span><br><span class="line-number">141</span><br><span class="line-number">142</span><br><span class="line-number">143</span><br><span class="line-number">144</span><br><span class="line-number">145</span><br><span class="line-number">146</span><br><span class="line-number">147</span><br><span class="line-number">148</span><br><span class="line-number">149</span><br><span class="line-number">150</span><br><span class="line-number">151</span><br><span class="line-number">152</span><br><span class="line-number">153</span><br><span class="line-number">154</span><br><span class="line-number">155</span><br><span class="line-number">156</span><br><span class="line-number">157</span><br><span class="line-number">158</span><br><span class="line-number">159</span><br><span class="line-number">160</span><br><span class="line-number">161</span><br><span class="line-number">162</span><br><span class="line-number">163</span><br><span class="line-number">164</span><br><span class="line-number">165</span><br><span class="line-number">166</span><br><span class="line-number">167</span><br><span class="line-number">168</span><br><span class="line-number">169</span><br><span class="line-number">170</span><br><span class="line-number">171</span><br><span class="line-number">172</span><br><span class="line-number">173</span><br><span class="line-number">174</span><br><span class="line-number">175</span><br><span class="line-number">176</span><br><span class="line-number">177</span><br><span class="line-number">178</span><br><span class="line-number">179</span><br><span class="line-number">180</span><br><span class="line-number">181</span><br><span class="line-number">182</span><br><span class="line-number">183</span><br><span class="line-number">184</span><br><span class="line-number">185</span><br><span class="line-number">186</span><br><span class="line-number">187</span><br><span class="line-number">188</span><br><span class="line-number">189</span><br><span class="line-number">190</span><br><span class="line-number">191</span><br><span class="line-number">192</span><br><span class="line-number">193</span><br><span class="line-number">194</span><br><span class="line-number">195</span><br><span class="line-number">196</span><br><span class="line-number">197</span><br><span class="line-number">198</span><br><span class="line-number">199</span><br><span class="line-number">200</span><br><span class="line-number">201</span><br><span class="line-number">202</span><br><span class="line-number">203</span><br><span class="line-number">204</span><br><span class="line-number">205</span><br><span class="line-number">206</span><br><span class="line-number">207</span><br><span class="line-number">208</span><br><span class="line-number">209</span><br><span class="line-number">210</span><br><span class="line-number">211</span><br><span class="line-number">212</span><br><span class="line-number">213</span><br><span class="line-number">214</span><br><span class="line-number">215</span><br><span class="line-number">216</span><br><span class="line-number">217</span><br><span class="line-number">218</span><br><span class="line-number">219</span><br><span class="line-number">220</span><br><span class="line-number">221</span><br><span class="line-number">222</span><br><span class="line-number">223</span><br><span class="line-number">224</span><br><span class="line-number">225</span><br><span class="line-number">226</span><br><span class="line-number">227</span><br><span class="line-number">228</span><br><span class="line-number">229</span><br><span class="line-number">230</span><br><span class="line-number">231</span><br><span class="line-number">232</span><br><span class="line-number">233</span><br><span class="line-number">234</span><br><span class="line-number">235</span><br><span class="line-number">236</span><br><span class="line-number">237</span><br><span class="line-number">238</span><br><span class="line-number">239</span><br><span class="line-number">240</span><br><span class="line-number">241</span><br><span class="line-number">242</span><br><span class="line-number">243</span><br><span class="line-number">244</span><br><span class="line-number">245</span><br><span class="line-number">246</span><br><span class="line-number">247</span><br><span class="line-number">248</span><br><span class="line-number">249</span><br><span class="line-number">250</span><br><span class="line-number">251</span><br><span class="line-number">252</span><br><span class="line-number">253</span><br><span class="line-number">254</span><br><span class="line-number">255</span><br><span class="line-number">256</span><br><span class="line-number">257</span><br><span class="line-number">258</span><br><span class="line-number">259</span><br><span class="line-number">260</span><br><span class="line-number">261</span><br><span class="line-number">262</span><br><span class="line-number">263</span><br><span class="line-number">264</span><br><span class="line-number">265</span><br><span class="line-number">266</span><br><span class="line-number">267</span><br><span class="line-number">268</span><br><span class="line-number">269</span><br><span class="line-number">270</span><br><span class="line-number">271</span><br><span class="line-number">272</span><br><span class="line-number">273</span><br><span class="line-number">274</span><br><span class="line-number">275</span><br><span class="line-number">276</span><br><span class="line-number">277</span><br><span class="line-number">278</span><br><span class="line-number">279</span><br><span class="line-number">280</span><br><span class="line-number">281</span><br><span class="line-number">282</span><br><span class="line-number">283</span><br><span class="line-number">284</span><br><span class="line-number">285</span><br><span class="line-number">286</span><br><span class="line-number">287</span><br><span class="line-number">288</span><br><span class="line-number">289</span><br><span class="line-number">290</span><br><span class="line-number">291</span><br><span class="line-number">292</span><br><span class="line-number">293</span><br><span class="line-number">294</span><br><span class="line-number">295</span><br><span class="line-number">296</span><br><span class="line-number">297</span><br><span class="line-number">298</span><br><span class="line-number">299</span><br><span class="line-number">300</span><br><span class="line-number">301</span><br><span class="line-number">302</span><br><span class="line-number">303</span><br><span class="line-number">304</span><br><span class="line-number">305</span><br><span class="line-number">306</span><br><span class="line-number">307</span><br><span class="line-number">308</span><br><span class="line-number">309</span><br><span class="line-number">310</span><br><span class="line-number">311</span><br><span class="line-number">312</span><br><span class="line-number">313</span><br><span class="line-number">314</span><br><span class="line-number">315</span><br><span class="line-number">316</span><br><span class="line-number">317</span><br><span class="line-number">318</span><br><span class="line-number">319</span><br><span class="line-number">320</span><br><span class="line-number">321</span><br><span class="line-number">322</span><br><span class="line-number">323</span><br><span class="line-number">324</span><br><span class="line-number">325</span><br><span class="line-number">326</span><br><span class="line-number">327</span><br><span class="line-number">328</span><br><span class="line-number">329</span><br><span class="line-number">330</span><br><span class="line-number">331</span><br><span class="line-number">332</span><br><span class="line-number">333</span><br><span class="line-number">334</span><br><span class="line-number">335</span><br><span class="line-number">336</span><br><span class="line-number">337</span><br><span class="line-number">338</span><br><span class="line-number">339</span><br><span class="line-number">340</span><br><span class="line-number">341</span><br><span class="line-number">342</span><br><span class="line-number">343</span><br><span class="line-number">344</span><br><span class="line-number">345</span><br><span class="line-number">346</span><br><span class="line-number">347</span><br><span class="line-number">348</span><br><span class="line-number">349</span><br><span class="line-number">350</span><br><span class="line-number">351</span><br><span class="line-number">352</span><br><span class="line-number">353</span><br><span class="line-number">354</span><br><span class="line-number">355</span><br><span class="line-number">356</span><br><span class="line-number">357</span><br><span class="line-number">358</span><br><span class="line-number">359</span><br><span class="line-number">360</span><br><span class="line-number">361</span><br><span class="line-number">362</span><br><span class="line-number">363</span><br><span class="line-number">364</span><br><span class="line-number">365</span><br><span class="line-number">366</span><br><span class="line-number">367</span><br><span class="line-number">368</span><br><span class="line-number">369</span><br><span class="line-number">370</span><br><span class="line-number">371</span><br><span class="line-number">372</span><br><span class="line-number">373</span><br><span class="line-number">374</span><br><span class="line-number">375</span><br><span class="line-number">376</span><br><span class="line-number">377</span><br><span class="line-number">378</span><br><span class="line-number">379</span><br><span class="line-number">380</span><br><span class="line-number">381</span><br><span class="line-number">382</span><br><span class="line-number">383</span><br><span class="line-number">384</span><br><span class="line-number">385</span><br><span class="line-number">386</span><br><span class="line-number">387</span><br><span class="line-number">388</span><br><span class="line-number">389</span><br><span class="line-number">390</span><br><span class="line-number">391</span><br><span class="line-number">392</span><br><span class="line-number">393</span><br><span class="line-number">394</span><br><span class="line-number">395</span><br><span class="line-number">396</span><br><span class="line-number">397</span><br><span class="line-number">398</span><br><span class="line-number">399</span><br><span class="line-number">400</span><br><span class="line-number">401</span><br><span class="line-number">402</span><br><span class="line-number">403</span><br><span class="line-number">404</span><br><span class="line-number">405</span><br><span class="line-number">406</span><br><span class="line-number">407</span><br><span class="line-number">408</span><br><span class="line-number">409</span><br><span class="line-number">410</span><br><span class="line-number">411</span><br><span class="line-number">412</span><br><span class="line-number">413</span><br><span class="line-number">414</span><br><span class="line-number">415</span><br><span class="line-number">416</span><br><span class="line-number">417</span><br><span class="line-number">418</span><br><span class="line-number">419</span><br><span class="line-number">420</span><br><span class="line-number">421</span><br><span class="line-number">422</span><br><span class="line-number">423</span><br><span class="line-number">424</span><br><span class="line-number">425</span><br><span class="line-number">426</span><br><span class="line-number">427</span><br><span class="line-number">428</span><br><span class="line-number">429</span><br><span class="line-number">430</span><br><span class="line-number">431</span><br><span class="line-number">432</span><br><span class="line-number">433</span><br><span class="line-number">434</span><br><span class="line-number">435</span><br><span class="line-number">436</span><br><span class="line-number">437</span><br><span class="line-number">438</span><br><span class="line-number">439</span><br><span class="line-number">440</span><br><span class="line-number">441</span><br><span class="line-number">442</span><br><span class="line-number">443</span><br><span class="line-number">444</span><br><span class="line-number">445</span><br><span class="line-number">446</span><br><span class="line-number">447</span><br><span class="line-number">448</span><br><span class="line-number">449</span><br><span class="line-number">450</span><br><span class="line-number">451</span><br><span class="line-number">452</span><br><span class="line-number">453</span><br><span class="line-number">454</span><br><span class="line-number">455</span><br><span class="line-number">456</span><br><span class="line-number">457</span><br><span class="line-number">458</span><br><span class="line-number">459</span><br><span class="line-number">460</span><br><span class="line-number">461</span><br><span class="line-number">462</span><br><span class="line-number">463</span><br><span class="line-number">464</span><br><span class="line-number">465</span><br><span class="line-number">466</span><br><span class="line-number">467</span><br><span class="line-number">468</span><br><span class="line-number">469</span><br><span class="line-number">470</span><br><span class="line-number">471</span><br><span class="line-number">472</span><br><span class="line-number">473</span><br><span class="line-number">474</span><br><span class="line-number">475</span><br><span class="line-number">476</span><br><span class="line-number">477</span><br><span class="line-number">478</span><br><span class="line-number">479</span><br><span class="line-number">480</span><br><span class="line-number">481</span><br><span class="line-number">482</span><br><span class="line-number">483</span><br><span class="line-number">484</span><br><span class="line-number">485</span><br><span class="line-number">486</span><br><span class="line-number">487</span><br><span class="line-number">488</span><br><span class="line-number">489</span><br><span class="line-number">490</span><br><span class="line-number">491</span><br><span class="line-number">492</span><br><span class="line-number">493</span><br><span class="line-number">494</span><br><span class="line-number">495</span><br><span class="line-number">496</span><br><span class="line-number">497</span><br><span class="line-number">498</span><br><span class="line-number">499</span><br><span class="line-number">500</span><br><span class="line-number">501</span><br><span class="line-number">502</span><br><span class="line-number">503</span><br><span class="line-number">504</span><br><span class="line-number">505</span><br><span class="line-number">506</span><br><span class="line-number">507</span><br><span class="line-number">508</span><br><span class="line-number">509</span><br><span class="line-number">510</span><br><span class="line-number">511</span><br><span class="line-number">512</span><br><span class="line-number">513</span><br><span class="line-number">514</span><br><span class="line-number">515</span><br><span class="line-number">516</span><br><span class="line-number">517</span><br><span class="line-number">518</span><br><span class="line-number">519</span><br><span class="line-number">520</span><br><span class="line-number">521</span><br><span class="line-number">522</span><br><span class="line-number">523</span><br><span class="line-number">524</span><br><span class="line-number">525</span><br><span class="line-number">526</span><br><span class="line-number">527</span><br><span class="line-number">528</span><br><span class="line-number">529</span><br><span class="line-number">530</span><br><span class="line-number">531</span><br><span class="line-number">532</span><br><span class="line-number">533</span><br><span class="line-number">534</span><br><span class="line-number">535</span><br><span class="line-number">536</span><br><span class="line-number">537</span><br><span class="line-number">538</span><br><span class="line-number">539</span><br><span class="line-number">540</span><br><span class="line-number">541</span><br><span class="line-number">542</span><br><span class="line-number">543</span><br><span class="line-number">544</span><br><span class="line-number">545</span><br><span class="line-number">546</span><br><span class="line-number">547</span><br><span class="line-number">548</span><br><span class="line-number">549</span><br><span class="line-number">550</span><br><span class="line-number">551</span><br><span class="line-number">552</span><br><span class="line-number">553</span><br><span class="line-number">554</span><br><span class="line-number">555</span><br><span class="line-number">556</span><br><span class="line-number">557</span><br><span class="line-number">558</span><br><span class="line-number">559</span><br><span class="line-number">560</span><br><span class="line-number">561</span><br><span class="line-number">562</span><br><span class="line-number">563</span><br><span class="line-number">564</span><br><span class="line-number">565</span><br><span class="line-number">566</span><br><span class="line-number">567</span><br><span class="line-number">568</span><br><span class="line-number">569</span><br><span class="line-number">570</span><br><span class="line-number">571</span><br><span class="line-number">572</span><br><span class="line-number">573</span><br><span class="line-number">574</span><br><span class="line-number">575</span><br><span class="line-number">576</span><br><span class="line-number">577</span><br><span class="line-number">578</span><br><span class="line-number">579</span><br><span class="line-number">580</span><br><span class="line-number">581</span><br><span class="line-number">582</span><br><span class="line-number">583</span><br><span class="line-number">584</span><br><span class="line-number">585</span><br><span class="line-number">586</span><br><span class="line-number">587</span><br><span class="line-number">588</span><br><span class="line-number">589</span><br><span class="line-number">590</span><br><span class="line-number">591</span><br><span class="line-number">592</span><br><span class="line-number">593</span><br><span class="line-number">594</span><br><span class="line-number">595</span><br><span class="line-number">596</span><br><span class="line-number">597</span><br><span class="line-number">598</span><br><span class="line-number">599</span><br><span class="line-number">600</span><br><span class="line-number">601</span><br><span class="line-number">602</span><br><span class="line-number">603</span><br><span class="line-number">604</span><br><span class="line-number">605</span><br><span class="line-number">606</span><br><span class="line-number">607</span><br><span class="line-number">608</span><br><span class="line-number">609</span><br><span class="line-number">610</span><br><span class="line-number">611</span><br><span class="line-number">612</span><br><span class="line-number">613</span><br><span class="line-number">614</span><br><span class="line-number">615</span><br><span class="line-number">616</span><br><span class="line-number">617</span><br><span class="line-number">618</span><br><span class="line-number">619</span><br><span class="line-number">620</span><br><span class="line-number">621</span><br><span class="line-number">622</span><br><span class="line-number">623</span><br><span class="line-number">624</span><br><span class="line-number">625</span><br><span class="line-number">626</span><br><span class="line-number">627</span><br><span class="line-number">628</span><br><span class="line-number">629</span><br><span class="line-number">630</span><br><span class="line-number">631</span><br><span class="line-number">632</span><br><span class="line-number">633</span><br><span class="line-number">634</span><br><span class="line-number">635</span><br><span class="line-number">636</span><br><span class="line-number">637</span><br><span class="line-number">638</span><br><span class="line-number">639</span><br><span class="line-number">640</span><br><span class="line-number">641</span><br><span class="line-number">642</span><br><span class="line-number">643</span><br><span class="line-number">644</span><br><span class="line-number">645</span><br><span class="line-number">646</span><br><span class="line-number">647</span><br><span class="line-number">648</span><br><span class="line-number">649</span><br><span class="line-number">650</span><br><span class="line-number">651</span><br><span class="line-number">652</span><br><span class="line-number">653</span><br><span class="line-number">654</span><br><span class="line-number">655</span><br><span class="line-number">656</span><br><span class="line-number">657</span><br><span class="line-number">658</span><br><span class="line-number">659</span><br><span class="line-number">660</span><br><span class="line-number">661</span><br><span class="line-number">662</span><br><span class="line-number">663</span><br><span class="line-number">664</span><br><span class="line-number">665</span><br><span class="line-number">666</span><br><span class="line-number">667</span><br><span class="line-number">668</span><br></div></div></div></div> <!----> <div class="page-edit"><div class="edit-link"><a href="https://github.com/MaiRen1997/Myblog/edit/master/docs/05.FastApi文档/55.常用业务封装/11.文件+minio实现上传.md" target="_blank" rel="noopener noreferrer">编辑</a> <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></div> <!----> <div class="last-updated"><span class="prefix">最后更新时间:</span> <span class="time">8/6/2026, 1:07:49 PM</span></div></div> <div class="page-nav-wapper"><div class="page-nav-centre-wrap"><a href="/BackEndBlog/pages/3d3a77/" class="page-nav-centre page-nav-centre-prev"><div class="tooltip">前端调用controller</div></a> <a href="/BackEndBlog/pages/b1fee7/" class="page-nav-centre page-nav-centre-next"><div class="tooltip">excel的上传与读取</div></a></div> <div class="page-nav"><p class="inner"><span class="prev">
+        ←
+        <a href="/BackEndBlog/pages/3d3a77/" class="prev">前端调用controller</a></span> <span class="next"><a href="/BackEndBlog/pages/b1fee7/">excel的上传与读取</a>→
+      </span></p></div></div></div> <div class="article-list"><div class="article-title"><a href="/BackEndBlog/archives/" class="iconfont icon-bi">最近更新</a></div> <div class="article-wrapper"><dl><dd>01</dd> <dt><a href="/BackEndBlog/pages/8b4a4c/"><div>
+            (vo)定义表对应pydantic模型
+            <!----></div></a> <span class="date">08-06</span></dt></dl><dl><dd>02</dd> <dt><a href="/BackEndBlog/pages/faf43f/"><div>
+            (do)定义表结构
+            <!----></div></a> <span class="date">08-06</span></dt></dl><dl><dd>03</dd> <dt><a href="/BackEndBlog/pages/425ec2/"><div>
+            (service基于dao)定义服务层
+            <!----></div></a> <span class="date">08-06</span></dt></dl> <dl><dd></dd> <dt><a href="/BackEndBlog/archives/" class="more">更多文章&gt;</a></dt></dl></div></div></main></div> <div class="footer"><!----> 
+  Theme by
+  <a href="https://github.com/xugaoyi/vuepress-theme-vdoing" target="_blank" title="本站主题">Vdoing</a> <!----></div> <div class="buttons"><div title="返回顶部" class="button blur go-to-top iconfont icon-fanhuidingbu" style="display:none;"></div> <div title="去评论" class="button blur go-to-comment iconfont icon-pinglun" style="display:none;"></div> <div title="主题模式" class="button blur theme-mode-but iconfont icon-zhuti"><ul class="select-box" style="display:none;"><li class="iconfont icon-zidong">
+          跟随系统
+        </li><li class="iconfont icon-rijianmoshi">
+          浅色模式
+        </li><li class="iconfont icon-yejianmoshi">
+          深色模式
+        </li><li class="iconfont icon-yuedu">
+          阅读模式
+        </li></ul></div></div> <!----> <!----> <!----></div><div class="global-ui"></div></div>
+    <script src="/BackEndBlog/assets/js/app.14233fa7.js" defer></script><script src="/BackEndBlog/assets/js/2.e9d3904f.js" defer></script><script src="/BackEndBlog/assets/js/194.96631f58.js" defer></script>
+  </body>
+</html>
