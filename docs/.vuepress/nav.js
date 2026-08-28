@@ -21,12 +21,37 @@ module.exports = [
   //   ],
   // },
   {
-    text: 'Mysql',
-    link: '/Mysql/',
+    text: 'Python基础',
+    link: '/python/'
   },
   {
     text: 'FastAPI',
     link: '/FastApi/',
+    items: [
+      {
+        text: '业务逻辑封装', 
+        items: [
+          { text: 'VO的封装', link: '/pages/b7d7e4/' },
+          { text: 'DO的封装', link: '/pages/2c83ae/' },
+          { text: 'dao的封装', link: '/pages/3e84c5/' },
+          { text: 'service的封装', link: '/pages/8968bb/' },
+          { text: 'controller的封装', link: '/pages/78316d/' },
+        ],
+      },
+      {
+        text: '常用业务封装', 
+        items: [
+          { text: 'minio的文件上传', link: '/pages/6f6528/' },
+          { text: 'excel的导入', link: '/pages/0304ee/' },
+          { text: '数据拉取', link: '/pages/07cd92/' },
+          { text: '导出的实现', link: '/pages/f8ee85/' },
+        ],
+      }
+    ]
+  },
+  {
+    text: 'Mysql',
+    link: '/Mysql/',
   },
   {
     text: '运维相关',
