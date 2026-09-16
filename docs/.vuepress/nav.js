@@ -31,7 +31,7 @@ module.exports = [
   },
   {
     text: 'Redis的使用',
-    link: '/Redis/',
+    link: '/RedisDoc/',
   },
   {
     text: 'Mysql',
